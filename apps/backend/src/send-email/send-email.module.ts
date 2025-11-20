@@ -14,7 +14,7 @@ import { JwtStrategy } from 'src/auth/strategies/jwt.strategy';
         transport: {
           host: configService.get('mail.host'),
           port: configService.get('mail.port'),
-          secure: false,
+          secure: configService.get('mail.secure'),
           auth: {
             user: configService.get('mail.username'),
             pass: configService.get('mail.password'),
