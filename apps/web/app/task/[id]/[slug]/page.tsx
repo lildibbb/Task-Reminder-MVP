@@ -40,17 +40,17 @@ const generateOptimisticId = (() => {
 })();
 
 export default function TaskDetailPage() {
-  // Params
+  
   const params = useParams();
   const taskId = params.id as string;
 
-  // State
+
   const [isEditing, setIsEditing] = useState(false);
   const [taskData, setTaskData] = useState<TaskData | null>(null);
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // Memoized form data with proper date handling
+
   const formData = useMemo(() => {
     if (!taskData) return null;
     return {
@@ -62,7 +62,7 @@ export default function TaskDetailPage() {
     };
   }, [taskData]);
 
-  // Hooks
+ 
   const {
     form,
     loading: formLoading,
@@ -101,7 +101,7 @@ export default function TaskDetailPage() {
     }
   }, [taskId]);
 
-  // Fetch users
+
   const fetchUsers = useCallback(async () => {
     try {
       const response = await APIService.get(AdminAPI.users.list);
@@ -187,7 +187,7 @@ export default function TaskDetailPage() {
       };
     });
 
-    // Transform activity logs
+ 
     const logs: Activity[] = activityLog
       .filter((log) => log.actionType !== "COMPLETION_REPORT_RESOLUTION")
       .map((log) => ({
@@ -228,7 +228,7 @@ export default function TaskDetailPage() {
     };
   }, []);
 
-  // Helper functions for activity transformation
+
   const getActivityType = (actionType: string): Activity["type"] => {
     switch (actionType) {
       case ActionType.CHANGE_STATUS:
@@ -265,7 +265,7 @@ export default function TaskDetailPage() {
     }
   };
 
-  // Create optimistic activity helper
+
   const createOptimisticActivity = useCallback(
     (
       type: Activity["type"],
@@ -286,7 +286,7 @@ export default function TaskDetailPage() {
     [user],
   );
 
-  // Optimistic update helper with rollback
+
   const updateTaskDataOptimistically = useCallback(
     (updater: (prev: TaskData) => TaskData) => {
       setTaskData((prev) => {
@@ -303,7 +303,6 @@ export default function TaskDetailPage() {
     [fetchTaskData],
   );
 
-  // Handle completion report submission with optimistic updates
   const handleAddCompletionReport = useCallback(
     async (comment: any) => {
       const { rollback } = updateTaskDataOptimistically((prev) => {
@@ -334,7 +333,7 @@ export default function TaskDetailPage() {
     [createOptimisticActivity, updateTaskDataOptimistically],
   );
 
-  // Handle status changes
+
   const handleStatusChange = useCallback(
     async (newStatus: string) => {
       const { rollback } = updateTaskDataOptimistically((prev) => {
@@ -357,7 +356,7 @@ export default function TaskDetailPage() {
           UserAPI.task.update.replace("{taskId}", taskId),
           { status: newStatus },
         );
-        await fetchTaskData(); // Refresh to get server state
+        await fetchTaskData(); 
       } catch (error) {
         console.error("Failed to update status:", error);
         rollback();
@@ -371,7 +370,7 @@ export default function TaskDetailPage() {
     ],
   );
 
-  // Handle completion report resolution
+
   const handleResolveCompletionReport = useCallback(
     async (reportId: string, isApproved: boolean) => {
       const action = isApproved ? "approved" : "rejected";
